@@ -4,13 +4,15 @@ import { User } from './src/entities/user.entity';
 import { Profile } from './src/entities/profile.entity';
 import { Post } from './src/entities/post.entity';
 import { Tag } from './src/entities/tag.entity';
-
+import 'dotenv/config';
 const dataSource = new DataSource({
-  type: 'sqlite',
-  database: 'db.sqlite',
+  type: 'postgres',
+  database: process.env.DATABASE_URL,
   entities: [User, Profile, Post, Tag],
-  synchronize: true,
+  synchronize: false,
 });
+
+console.log({ DATABASE_URL: process.env.DATABASE_URL });
 
 async function seed() {
   await dataSource.initialize();
