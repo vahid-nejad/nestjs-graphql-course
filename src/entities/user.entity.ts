@@ -3,14 +3,17 @@ import {
   PrimaryGeneratedColumn,
   Column,
   OneToOne,
-  JoinColumn,
   OneToMany,
+  JoinColumn,
 } from 'typeorm';
-import { Post } from './post.entity';
 import { Profile } from './profile.entity';
+import { Post } from './post.entity';
 
 @Entity()
 export class User {
+  constructor(partial?: Partial<User>) {
+    Object.assign(this, partial);
+  }
   @PrimaryGeneratedColumn()
   id: number;
 
