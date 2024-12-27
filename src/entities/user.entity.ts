@@ -2,35 +2,28 @@ import {
   Entity,
   PrimaryGeneratedColumn,
   Column,
-  CreateDateColumn,
+  OneToOne,
+  JoinColumn,
   OneToMany,
 } from 'typeorm';
-import { Property } from './property.entity';
-import { Subscriptions } from './subscription.entity';
+import { Post } from './post.entity';
+import { Profile } from './profile.entity';
 
-@Entity('user')
+@Entity()
 export class User {
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
+  @PrimaryGeneratedColumn()
+  id: number;
 
   @Column()
-  firstName: string;
+  username: string;
 
   @Column()
-  lastName: string;
-
-  @Column({ unique: true })
   email: string;
 
-  @Column({ nullable: true })
-  avatarUrl: string;
+  @OneToOne(() => Profile, (profile) => profile.user, { cascade: true })
+  @JoinColumn()
+  profile: Profile;
 
-  @CreateDateColumn()
-  createdAt: Date;
-
-  @OneToMany(() => Property, (property) => property.user)
-  properties: Property[];
-
-  @OneToMany(() => Subscriptions, (subscription) => subscription.user)
-  subscriptions: Subscriptions[];
+  @OneToMany(() => Post, (post) => post.user)
+  posts: Post[];
 }
