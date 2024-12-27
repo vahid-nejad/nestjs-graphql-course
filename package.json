@@ -21,6 +21,7 @@
     "seed": "ts-node seed.ts"
   },
   "dependencies": {
+    "@apollo/server": "^4.11.2",
     "@faker-js/faker": "^9.3.0",
     "@nestjs/apollo": "^12.2.2",
     "@nestjs/common": "^10.0.0",
