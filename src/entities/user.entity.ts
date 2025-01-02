@@ -10,6 +10,7 @@ import {
 import { Post } from './post.entity';
 import { Profile } from './profile.entity';
 import { Role } from 'src/enums/role.enum';
+import { Exclude } from 'class-transformer';
 
 @ObjectType()
 @Entity()

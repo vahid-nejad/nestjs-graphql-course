@@ -4,6 +4,7 @@ import { User } from 'src/entities/user.entity';
 import { Repository } from 'typeorm';
 import { CreateUserInput } from './dto/create-user.input';
 import { UpdateUserInput } from './dto/update-user.input';
+import { hash } from 'argon2';
 
 @Injectable()
 export class UserService {
@@ -21,6 +22,7 @@ export class UserService {
 
   async create(createUserInput: CreateUserInput) {
     const newUser = this.userRepo.create(createUserInput);
+    const hashedPassword = hash(createUserInput.password);
     return await this.userRepo.save(newUser);
   }
 
