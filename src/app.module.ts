@@ -7,12 +7,14 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import dbConfig from './config/db.config';
 import { UserModule } from './user/user.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       envFilePath: '.env',
       load: [dbConfig],
+      isGlobal: true,
     }),
     TypeOrmModule.forRootAsync({
       useFactory: dbConfig,
@@ -26,6 +28,8 @@ import { UserModule } from './user/user.module';
     }),
 
     UserModule,
+
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],

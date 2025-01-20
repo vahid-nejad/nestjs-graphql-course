@@ -1,5 +1,6 @@
 import {
   Args,
+  Context,
   Int,
   Mutation,
   Parent,
@@ -9,9 +10,15 @@ import {
 } from '@nestjs/graphql';
 import { User } from 'src/entities/user.entity';
 import { UserService } from './user.service';
-import { Logger } from '@nestjs/common';
+import { Logger, UseGuards } from '@nestjs/common';
 import { CreateUserInput } from './dto/create-user.input';
 import { UpdateUserInput } from './dto/update-user.input';
+import { GqlJwtGuard } from 'src/auth/guards/gql-jwt-guard/gql-jwt.guard';
+import { CurrentUser } from 'src/auth/decorators/current-user.decorator';
+import { JwtUser } from 'src/auth/types/jwt-user';
+import { Roles } from 'src/auth/decorators/roles.decorator';
+import { Role } from 'src/enums/role.enum';
+import { RolesGuard } from 'src/auth/guards/roles/roles.guard';
 
 @Resolver(() => User)
 export class UserResolver {
@@ -23,6 +30,7 @@ export class UserResolver {
     return await this.userService.findAll();
   }
 
+  @UseGuards(GqlJwtGuard)
   @Query(() => User)
   getUser(@Args('id', { type: () => Int }) id: number) {
     return this.userService.findOne(id);
@@ -34,17 +42,22 @@ export class UserResolver {
     return await user.profile;
   }
 
-  @Mutation(() => User)
-  createUser(@Args('createUserInput') createUserInput: CreateUserInput) {
-    return this.userService.create(createUserInput);
-  }
+  // @Mutation(() => User)
+  // createUser(@Args('createUserInput') createUserInput: CreateUserInput) {
+  //   return this.userService.create(createUserInput);
+  // }
 
+  @Roles(Role.ADMIN)
+  @UseGuards(RolesGuard)
+  @UseGuards(GqlJwtGuard)
   @Mutation(() => User)
   updateUser(
-    @Args('id', { type: () => Int }) id: number,
+    @CurrentUser() user: JwtUser,
     @Args('updateUserInput') updateUserInput: UpdateUserInput,
   ) {
-    return this.userService.update(id, updateUserInput);
+    console.log({ currentUser: user });
+
+    return this.userService.update(user.userId, updateUserInput);
   }
 
   @Mutation(() => Boolean)
